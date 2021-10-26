@@ -1,0 +1,24 @@
+# For save directories only enter the parent directory for all projects checkpoints. 
+# project.name will be joined to both checkpoints and runs as the basename directory.
+
+project:
+    name:             'inanimate_alexnet_large'
+    description:      'Training AlexNet on faces with larger data version.'
+    model:            'AlexNet'
+data_directories:
+    task1:            '/mindhive/nklab4/shared/datasets/data_inanimate'
+save_directories:
+    checkpoints_dir:  '/mindhive/nklab4/users/juliom/projects/FaceNets/checkpoints/alexnet/'
+    log_dir:          '/mindhive/nklab4/users/juliom/projects/FaceNets/runs/alexnet/'
+hyperparameters: 
+    optimizer:        'adam'
+    batch_size:       64
+    learning_rate:    0.0001
+    momentum:         None
+    step_size:        40
+    weight_decay:     0.0
+    split:            False
+max_train_samples:
+    task1:            1000
+max_valid_samples:
+    task1:            200

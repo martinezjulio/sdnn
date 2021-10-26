@@ -1,0 +1,34 @@
+# For save directories only enter the parent directory for all projects checkpoints. 
+# project.name will be joined to both checkpoints and runs as the basename directory.
+
+project:
+    name:             'double_face_inanimate_400k'
+    description:      'QUADRO: Training standard AlexNetDouble using SGD on faces and inanimate on single classifier with 400k samples.'
+    model:            'AlexNetDouble'
+data_directories:
+    task1:            '/mindhive/nklab4/shared/datasets/data_facecar'
+    task2:            '/mindhive/nklab4/shared/datasets/data_inanimate'
+save_directories:
+    checkpoints_dir:  '/mindhive/nklab4/users/jrch/CNN-Branching/checkpoints/alexnet/'
+    log_dir:          '/mindhive/nklab4/users/jrch/CNN-Branching/runs/alexnet/'
+saving:
+    keep:             [15, 30, 45, 60, 75, 90]
+    function:         'step'
+    params:           {'step': 1, 'offset': 0}
+    max_count:        7
+hyperparameters: 
+    batch_size:       128
+    optimizer:        'sgd'
+    momentum:         0.9
+    learning_rate:    0.001
+    use_scheduler:    True
+    scheduler:        'ReduceLROnPlateau'
+    scheduler_params: {'patience': 5, 'verbose': True}
+    weight_decay:     0.0001
+    split:            False
+max_train_samples:
+    task1:            247
+    task2:            1000
+max_valid_samples:
+    task1:            13
+    task2:            50

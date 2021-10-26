@@ -1,0 +1,34 @@
+# For save directories only enter the parent directory for all projects checkpoints. 
+# project.name will be joined to both checkpoints and runs as the basename directory.
+
+project:
+    name:             'face_inanimate_400k_seed2'
+    description:      'Training VGG on face and objects on single classifier, large data version.'
+    model:            'VGG16'
+data_directories:
+    task1:            '/mindhive/nklab4/shared/datasets/data_facecar'
+    task2:            '/mindhive/nklab4/shared/datasets/data_inanimate'
+save_directories:
+    checkpoints_dir:  '/mindhive/nklab4/users/juliom/projects/FaceNets/checkpoints2/vgg/'
+    log_dir:          '/mindhive/nklab4/users/juliom/projects/FaceNets/runs2/vgg/'
+saving:
+    keep:             [-1]
+    function:         'step'
+    params:           {'step': 1, 'offset': 0}
+    max_count:        100
+hyperparameters: 
+    batch_size:       128
+    optimizer:        'sgd'
+    momentum:         0.9
+    learning_rate:    0.001
+    use_scheduler:    True
+    scheduler:        'ReduceLROnPlateau'
+    scheduler_params: {'patience': 5, 'verbose': True}
+    weight_decay:     0.0001
+    split:            False
+max_train_samples:
+    task1:            247
+    task2:            1000
+max_valid_samples:
+    task1:            50
+    task2:            50

@@ -1,0 +1,34 @@
+# For save directories only enter the parent directory for all projects checkpoints. 
+# project.name will be joined to both checkpoints and runs as the basename directory.
+
+project:
+    name:             'face_casia_100k_seed1'
+    description:      'Training VGG on VGGFace and CASIA-webface on single classifier.'
+    model:            'VGG16'
+data_directories:
+    task1:            '/mindhive/nklab4/shared/datasets/data_facecar'
+    task2:            '/om2/group/nklab/shared/datasets/CASIA-WebFace-Matched'
+save_directories:
+    checkpoints_dir:  '/om2/user/kdobs/FaceNets/checkpoints/vgg/'
+    log_dir:          '/om2/user/kdobs/FaceNets/runs/vgg/'
+saving:
+    keep:             [-1]
+    function:         'step'
+    params:           {'step': 1, 'offset': 0}
+    max_count:        100
+hyperparameters: 
+    batch_size:       128
+    optimizer:        'sgd'
+    momentum:         0.9
+    learning_rate:    0.001
+    use_scheduler:    True
+    scheduler:        'ReduceLROnPlateau'
+    scheduler_params: {'patience': 5, 'verbose': True}
+    weight_decay:     0.0001
+    split:            False
+max_train_samples:
+    task1:            58
+    task2:            58
+max_valid_samples:
+    task1:            5
+    task2:            5

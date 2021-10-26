@@ -1,0 +1,27 @@
+# For save directories only enter the parent directory for all projects checkpoints. 
+# project.name will be joined to both checkpoints and runs as the basename directory.
+
+project:
+    name:             'face_inanimate_400k_sgd'
+    description:      'Training AlexNet using SGD on faces and inanimate on single classifier with 400k samples.'
+    model:            'AlexNet'
+data_directories:
+    task1:            '/mindhive/nklab4/shared/datasets/data_facecar'
+    task2:            '/mindhive/nklab4/shared/datasets/data_inanimate'
+save_directories:
+    checkpoints_dir:  '/mindhive/nklab4/users/juliom/projects/FaceNets/checkpoints2/alexnet/'
+    log_dir:          '/mindhive/nklab4/users/juliom/projects/FaceNets/runs2/alexnet/'
+hyperparameters: 
+    optimizer:        'sgd'
+    batch_size:       128
+    learning_rate:    0.001
+    momentum:         0.9
+    step_size:        100
+    weight_decay:     0.0001
+    split:            False
+max_train_samples:
+    task1:            247
+    task2:            1000
+max_valid_samples:
+    task1:            25
+    task2:            50

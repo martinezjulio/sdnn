@@ -1,0 +1,24 @@
+project:
+    name:             'face_inanimate_nofood_50k_seed'
+    description:      'Training VGG on faces and objects on single classifier, matched to food data version.'
+    model:            'VGG16'
+data_directories:
+    task1:            '/mindhive/nklab4/shared/datasets/data_facecar'
+    task2:            '/mindhive/nklab4/shared/datasets/data_inanimate_nofood'
+save_directories:
+    checkpoints_dir:  '/mindhive/nklab4/users/juliom/projects/FaceNets/checkpoints2/vgg/'
+    log_dir:          '/mindhive/nklab4/users/juliom/projects/FaceNets/runs2/vgg/'
+hyperparameters:  
+    optimizer:        'sgd'
+    batch_size:       128
+    learning_rate:    0.001
+    momentum:         0.9
+    step_size:        140
+    weight_decay:     0.0001
+    split:            False
+max_train_samples:
+    task1:            29
+    task2:            127
+max_valid_samples:
+    task1:            13
+    task2:            50

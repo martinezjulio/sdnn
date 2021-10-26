@@ -1,0 +1,21 @@
+project:
+    name:             'inanimate_nofood_vgg_100k'
+    description:      'Training VGG on objects with 100k images'
+    model:            'VGG16'
+data_directories:
+    task2:            '/mindhive/nklab4/shared/datasets/data_inanimate_nofood'
+save_directories:
+    checkpoints_dir:  '/mindhive/nklab4/users/juliom/projects/FaceNets/checkpoints/vgg'
+    log_dir:          '/mindhive/nklab4/users/juliom/projects/FaceNets/runs/vgg'
+hyperparameters:  
+    optimizer:        'sgd'
+    batch_size:       64
+    learning_rate:    0.001
+    momentum:         0.9
+    step_size:        30
+    weight_decay:     0.0001
+    split:            False
+max_train_samples:
+    task2:            231
+max_valid_samples:
+    task2:            26

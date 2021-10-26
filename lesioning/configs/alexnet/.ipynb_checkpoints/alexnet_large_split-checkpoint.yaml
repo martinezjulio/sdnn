@@ -1,0 +1,31 @@
+# For save directories only enter the parent directory for all projects checkpoints use care to use. 
+# project.name will be joined to both checkpoints and runs as the basename directory.
+
+project:
+    name:             'alexnetsplit_test2'
+    description:      'Branching Nets.'
+    model:            'AlexNetSplit'
+data_directories:
+    task1:            '/mindhive/nklab4/shared/datasets/data_facecar'
+data_directories_2:
+    task1:            '/mindhive/nklab4/shared/datasets/data_inanimate'
+save_directories:
+    checkpoints_dir:  '/mindhive/nklab4/users/juliom/projects/FaceNets/checkpoints/alexnet/'
+    log_dir:          '/mindhive/nklab4/users/juliom/projects/FaceNets/runs/alexnet/'
+hyperparameters:     
+    optimizer:        'adam'
+    momentum:         None
+    batch_size:       128
+    learning_rate:    0.0001
+    step_size:        40
+    weight_decay:     0.00
+    split:            True
+    split_index:      2 
+max_train_samples:
+    task1:            246
+max_train_samples_2:
+    task1:           1000
+max_valid_samples:
+    task1:            53
+max_valid_samples_2:
+    task1:            200

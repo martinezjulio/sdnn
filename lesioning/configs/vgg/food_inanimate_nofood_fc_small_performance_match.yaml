@@ -1,0 +1,24 @@
+project:
+    name:             'food_inanimate_nofood_fc_small'
+    description:      'Only for matching performance purposes.'
+    model:            'VGG16'
+data_directories:
+    task1:            '/mindhive/nklab4/users/juliom/data/data_food'
+    task2:            '/mindhive/nklab4/users/juliom/data/data_inanimate_nofood2/data_inanimate_nofood'
+save_directories:
+    checkpoints_dir:  '/mindhive/nklab4/users/juliom/projects/FaceNets/checkpoints/'
+    log_dir:          '/mindhive/nklab4/users/juliom/projects/FaceNets/runs/'
+hyperparameters:      
+    optimizer:        'sgd'
+    batch_size:       64
+    learning_rate:    0.001
+    momentum:         0.9
+    step_size:        30
+    weight_decay:     0.0001
+    split:            False
+max_train_samples:
+    task1:            900
+    task2:            231
+max_valid_samples:
+    task1:            100
+    task2:            26

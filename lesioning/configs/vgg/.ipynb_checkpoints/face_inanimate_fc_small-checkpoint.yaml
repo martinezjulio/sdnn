@@ -1,0 +1,27 @@
+# For save directories only enter the parent directory for all projects checkpoints. 
+# project.name will be joined to both checkpoints and runs as the basename directory.
+
+project:
+    name:             'face_inanimate_fc_small'
+    description:      'Training VGG on food and objects on single classifier, smaller data version.'
+    model:            'VGG16'
+data_directories:
+    task1:            '/mindhive/nklab4/shared/datasets/data_facecar'
+    task2:            '/mindhive/nklab4/shared/datasets/data_inanimate'
+save_directories:
+    checkpoints_dir:  '/mindhive/nklab4/users/juliom/projects/FaceNets/checkpoints/'
+    log_dir:          '/mindhive/nklab4/users/juliom/projects/FaceNets/runs/'
+hyperparameters:   
+    optimizer:        'sgd'
+    batch_size:       64
+    learning_rate:    0.001
+    momentum:         0.9
+    step_size:        30
+    weight_decay:     0.0001
+    split:            False
+max_train_samples:
+    task1:            87
+    task2:            354
+max_valid_samples:
+    task1:            5
+    task2:            18

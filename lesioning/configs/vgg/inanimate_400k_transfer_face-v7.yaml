@@ -1,0 +1,26 @@
+# For save directories only enter the parent directory for all projects checkpoints. 
+# project.name will be joined to both checkpoints and runs as the basename directory.
+
+project:
+    name:             'inanimate_400k_transfer_face-v7'
+    description:      'Transfer Learning on VGG inanimate to faces'
+    model:            'VGG16'
+data_directories:
+    task1:            '/mindhive/nklab4/shared/datasets/data_facecar'
+save_directories:
+    checkpoints_dir:  '/mindhive/nklab4/users/juliom/projects/FaceNets/checkpoints2/vgg/'
+    log_dir:          '/mindhive/nklab4/users/juliom/projects/FaceNets/runs2/vgg/'
+hyperparameters:   
+    optimizer:        'sgd'
+    batch_size:       64
+    learning_rate:    0.001
+    momentum:         0.9
+    step_size:        30
+    weight_decay:     0.0001
+    split:            False
+max_train_samples:
+    task1:            247
+max_valid_samples:
+    task1:            50
+    
+    

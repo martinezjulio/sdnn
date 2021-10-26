@@ -1,0 +1,29 @@
+# For save directories only enter the parent directory for all projects checkpoints. 
+# project.name will be joined to both checkpoints and runs as the basename directory.
+
+project:
+    name:             'face_inanimate_400k_seed_transfer_babyvision_0001'
+    description:      'Transfer Learning on saycam resent to faces and objects'
+    model:            None
+data_directories:
+    task1:            '/mindhive/nklab4/shared/datasets/data_facecar'
+    task2:            '/mindhive/nklab4/shared/datasets/data_inanimate'
+save_directories:
+    checkpoints_dir:  '/mindhive/nklab4/users/juliom/projects/FaceNets/checkpoints2/resnet/'
+    log_dir:          '/mindhive/nklab4/users/juliom/projects/FaceNets/runs2/resnet/'
+hyperparameters:   
+    optimizer:        'adam'
+    batch_size:       256
+    learning_rate:    0.0001
+    momentum:         0.9
+    step_size:        None
+    weight_decay:     0.0001
+    split:            False
+max_train_samples:
+    task1:            247
+    task2:            1000
+max_valid_samples:
+    task1:            13  # 50
+    task2:            50
+    
+    

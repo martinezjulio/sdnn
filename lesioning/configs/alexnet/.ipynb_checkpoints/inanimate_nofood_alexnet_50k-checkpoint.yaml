@@ -1,0 +1,24 @@
+# For save directories only enter the parent directory for all projects checkpoints. 
+# project.name will be joined to both checkpoints and runs as the basename directory.
+
+project:
+    name:             'inanimate_nofood_alexnet_50k'
+    description:      'Training AlexNet on inanimate objects with no food'
+    model:            'AlexNet'
+data_directories:
+    task2:            '/mindhive/nklab4/shared/datasets/data_inanimate_nofood'
+save_directories:
+    checkpoints_dir:  '/mindhive/nklab4/users/juliom/projects/FaceNets/checkpoints/alexnet/'
+    log_dir:          '/mindhive/nklab4/users/juliom/projects/FaceNets/runs/alexnet/'
+hyperparameters: 
+    optimizer:        'adam'
+    batch_size:       64
+    learning_rate:    0.0001
+    momentum:         None
+    step_size:        100
+    weight_decay:     0.0
+    split:            False
+max_train_samples:
+    task2:            127 
+max_valid_samples:
+    task2:            14
