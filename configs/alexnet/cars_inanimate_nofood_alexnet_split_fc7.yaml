@@ -1,0 +1,31 @@
+# For save directories only enter the parent directory for all projects checkpoints use care to use. 
+# project.name will be joined to both checkpoints and runs as the basename directory.
+
+project:
+    name:             'cars_inanimate_nofood_alexnet_split_fc7'
+    description:      'AlexNet branched at FC7'
+    model:            'AlexNetSplit'
+data_directories:
+    task1:            '/mindhive/nklab4/shared/datasets/data_car'
+data_directories_2:
+    task1:            '/mindhive/nklab4/shared/datasets/data_inanimate_nofood'
+save_directories:
+    checkpoints_dir:  '/mindhive/nklab4/users/juliom/projects/FaceNets/checkpoints/alexnet'
+    log_dir:          '/mindhive/nklab4/users/juliom/projects/FaceNets/runs/alexnet'
+hyperparameters:     
+    optimizer:        'adam'
+    momentum:         None
+    batch_size:       64
+    learning_rate:    0.0001
+    step_size:        40
+    weight_decay:     0.00
+    split:            True
+    split_index:      24 
+max_train_samples:
+    task1:            45
+max_train_samples_2:
+    task1:            127
+max_valid_samples:
+    task1:            5
+max_valid_samples_2:
+    task1:            14

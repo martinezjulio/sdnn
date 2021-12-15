@@ -2,30 +2,30 @@
 # project.name will be joined to both checkpoints and runs as the basename directory.
 
 project:
-    name:             'face_400k_resnet50'
-    description:      'Training ResNet50 on faces and objects on single classifier, small data version.'
-    model:            'ResNet50'
+    name:             'face_AFD_full_seed'
+    description:      'Training VGG on Asian faces, entire dataset.'
+    model:            'VGG16'
 data_directories:
-    task1:            '/mindhive/nklab4/shared/datasets/data_facecar'
+    task1:            '/om2/group/nklab/kdobs/data_AFD_matched'
 save_directories:
-    checkpoints_dir:  '/mindhive/nklab4/users/juliom/projects/FaceNets/checkpoints2/resnet/'
-    log_dir:          '/mindhive/nklab4/users/juliom/projects/FaceNets/runs2/resnet/'
+    checkpoints_dir:  '/mindhive/nklab4/users/juliom/projects/FaceNets/checkpoints2/vgg/'
+    log_dir:          '/mindhive/nklab4/users/juliom/projects/FaceNets/runs2/vgg/'
 saving:
     keep:             [-1]
     function:         'step'
     params:           {'step': 10, 'offset': 0}
-    max_count:        100
+    max_count:        200
 hyperparameters: 
     batch_size:       128
     optimizer:        'sgd'
     momentum:         0.9
     learning_rate:    0.001
-    use_scheduler:    "True"
+    use_scheduler:    True
     scheduler:        'ReduceLROnPlateau'
     scheduler_params: {'patience': 5, 'verbose': True}
     weight_decay:     0.0001
     split:            False
 max_train_samples:
-    task1:            247
+    task1:            100
 max_valid_samples:
-    task1:            13
+    task1:            5
