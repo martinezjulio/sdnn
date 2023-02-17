@@ -11,7 +11,7 @@ from sklearn.decomposition import PCA
 # from utils import config
 # CONFIG = config.Config()
 
-list = ['MLMF','AL','AM']
+list = ['MLMF', 'AL', 'AM']
 
 N = 175
 arr = []
@@ -19,36 +19,51 @@ for i in range(7):
     arr = np.hstack((arr, range(i, N, 7)))
 arr = np.array(arr, dtype='int16')
 
+
 def compute_similarity(feature_dict, layers):
     print('calculating similatiry matrices')
     similarity = {}
     for layer in layers:
-        #if isinstance(layer, list):
+        # if isinstance(layer, list):
         layer = str(layer)
         features = feature_dict[layer]
         N = features.shape[0]
-        similarity[layer] = np.zeros((N,N))
+        similarity[layer] = np.zeros((N, N))
         for i in range(N):
             for j in range(N):
-                similarity[layer][i,j] = np.corrcoef(features[i,:], features[j,:])[0,1]
-                    
+                similarity[layer][i, j] = np.corrcoef(
+                    features[i, :], features[j, :])[0, 1]
+
     return similarity
 
+
 def load_neural_data():
-    #get neural vectors
+    # get neural vectors
     patches = ['MLMF', 'AL', 'AM']
     print('loading neural data')
     neural_vecs = {}
     path = '/mindhive/nklab4/users/tom/code/models/EIG-faces/neural_data_and_stimuli/'
-    MLMF = loadmat(os.path.join(path, 'data/freiwald_tsao2010', 'neural_vecs_MLMF.mat'))
+    MLMF = loadmat(
+        os.path.join(
+            path,
+            'data/freiwald_tsao2010',
+            'neural_vecs_MLMF.mat'))
     MLMF = MLMF['neural_vecs']
     neural_vecs['MLMF'] = MLMF[0:175, :]
 
-    AL = loadmat(os.path.join(path, 'data/freiwald_tsao2010', 'neural_vecs_AL.mat'))
+    AL = loadmat(
+        os.path.join(
+            path,
+            'data/freiwald_tsao2010',
+            'neural_vecs_AL.mat'))
     AL = AL['neural_vecs']
     neural_vecs['AL'] = AL[0:175, :]
 
-    AM = loadmat(os.path.join(path, 'data/freiwald_tsao2010', 'neural_vecs_AM.mat'))
+    AM = loadmat(
+        os.path.join(
+            path,
+            'data/freiwald_tsao2010',
+            'neural_vecs_AM.mat'))
     AM = AM['neural_vecs']
     neural_vecs['AM'] = AM[0:175, :]
     return neural_vecs
@@ -90,9 +105,9 @@ def load_model_data_integrated(filename, bfm):
         layers.append(layer)
         features = f[str(layer)][()]
         if bfm:
-            features = features[arr,:]
+            features = features[arr, :]
         if features.shape[1] == 404:
-            features = features[:,:-4] 
+            features = features[:, :-4]
 
         model_vecs[layer] = features
 
@@ -100,35 +115,34 @@ def load_model_data_integrated(filename, bfm):
         features = f['Att'][()]
         layers.append('Att')
         if bfm:
-            features = features[arr,:]
+            features = features[arr, :]
         model_vecs['Att'] = features
-    except:
+    except BaseException:
         pass
 
     return model_vecs, layers
 
 
-
 def load_intrinsics(imagefolder, component, bfm=True, process='none'):
     N = 175
     im_size = 64
-    
+
     features = []
-    for i in range(1, N+1):
+    for i in range(1, N + 1):
         if component == 'albedo' or component == 'normals':
             append = '_' + component
         else:
-            append =  ''
+            append = ''
         fname = os.path.join(imagefolder, str(i) + append + '.png')
         features.append(_load_image(fname, im_size, component))
 
     features = np.array(features)
     features = __process_features(features, process)
-    
-    if component == 'raw' and bfm==False:
+
+    if component == 'raw' and bfm == False:
         pass
     else:
-        features = features[arr,:]
+        features = features[arr, :]
 
     return features
 
@@ -136,10 +150,10 @@ def load_intrinsics(imagefolder, component, bfm=True, process='none'):
 def _load_image(fname, im_size, component):
     with Image.open(fname).resize((im_size, im_size)) as f:
         image = np.asarray(f, dtype=np.float32)
-        
+
     if component == 'raw':
         if len(image.shape) == 3 and image.shape[2] > 3:
-            image = image[:, :, 0:3]        
+            image = image[:, :, 0:3]
     else:
         image = image[:, :, 0:3]
 

@@ -3,7 +3,7 @@ Created on Sept, 2019, based on PyTorch open source implementation
 @author: Julio A Martinez
 '''
 
-from utils.vision import VisionDataset
+from .vision import VisionDataset
 
 from PIL import Image
 
@@ -34,31 +34,34 @@ def is_image_file(filename):
     """
     return has_file_allowed_extension(filename, IMG_EXTENSIONS)
 
-def make_dataset(class_to_idx, max_samples, maxout, read_seed=None, extensions=None, is_valid_file=None):
+
+def make_dataset(class_to_idx, max_samples, maxout,
+                 read_seed=None, extensions=None, is_valid_file=None):
     '''
     Input:
         max_samples: the max number of samples per category (Note: allows for less and therfore a non
-                                                            uniform number of samples per category. 
+                                                            uniform number of samples per category.
                                                             Can easily be changed to force uniformity):
     Return:
         images: list of image paths sorted lexigraphically by name
     '''
     print('\nread_seed:', read_seed)
-    
+
     images = []
     classes_temp = []
     images_dict = {}
     if not ((extensions is None) ^ (is_valid_file is None)):
-        raise ValueError("Both extensions and is_valid_file cannot be None or not None at the same time")
+        raise ValueError(
+            "Both extensions and is_valid_file cannot be None or not None at the same time")
     if extensions is not None:
         def is_valid_file(x):
             return has_file_allowed_extension(x, extensions)
-    
-    #print(class_to_idx)
+
+    # print(class_to_idx)
     for target in sorted(class_to_idx.keys()):
         images_dict[target] = []
-        
-        #d = os.path.join(dir, target)
+
+        # d = os.path.join(dir, target)
         if not os.path.isdir(target):
             continue
 
@@ -66,66 +69,76 @@ def make_dataset(class_to_idx, max_samples, maxout, read_seed=None, extensions=N
         for root, _, fnames in sorted(os.walk(target)):
             for fname in sorted(fnames):
                 path = os.path.join(root, fname)
-                task_name = os.path.join(os.path.join(os.path.join(path, os.pardir),os.pardir), os.pardir)
-                #print('task_name 1:', task_name)
+                task_name = os.path.join(
+                    os.path.join(
+                        os.path.join(
+                            path,
+                            os.pardir),
+                        os.pardir),
+                    os.pardir)
+                # print('task_name 1:', task_name)
                 task_name = os.path.abspath(task_name)
-                #print('task_name 2:', task_name)
+                # print('task_name 2:', task_name)
                 task_name = os.path.basename(task_name)
-                #print('task_name 3:', task_name)
+                # print('task_name 3:', task_name)
                 if is_valid_file(path):
                     if (max_samples[task_name] is None):
                         item = (path, class_to_idx[target])
                         images.append(item)
-                    elif maxout: # continues until last image is taken
-                        #print('maxout')
+                    elif maxout:  # continues until last image is taken
+                        # print('maxout')
                         item = (path, class_to_idx[target], task_name)
-                        #print(type(class_to_idx[target]))
-                        #images.append(item)
-                        
-                        #print('target:', target)
-                        #print('item:', item)
-                        
+                        # print(type(class_to_idx[target]))
+                        # images.append(item)
+
+                        # print('target:', target)
+                        # print('item:', item)
+
                         item = (path, class_to_idx[target])
                         images_dict[target].append(item)
-                        if (target,'task_name') not in images_dict:
-                            images_dict[(target,'task_name')] = task_name
-                       
+                        if (target, 'task_name') not in images_dict:
+                            images_dict[(target, 'task_name')] = task_name
+
                     elif num_samples_reached < max_samples[task_name]:
-                        #print('no maxout')
+                        # print('no maxout')
                         item = (path, class_to_idx[target])
                         images.append(item)
-                        num_samples_reached +=1
+                        num_samples_reached += 1
                     else:
                         break
             if maxout:
-                temp  = np.array(images_dict[target])  # column one is abs path, column two is idx, column three is task
-                image_paths_temp, image_idx_temp = temp[:,0], temp[:,1]
+                # column one is abs path, column two is idx, column three is
+                # task
+                temp = np.array(images_dict[target])
+                image_paths_temp, image_idx_temp = temp[:, 0], temp[:, 1]
 
                 permutation = np.arange(len(image_paths_temp))
-                
+
                 if read_seed is not None:
                     np.random.seed(read_seed)
-                np.random.shuffle(permutation) # in place
+                np.random.shuffle(permutation)  # in place
 
-                image_paths_temp, image_idx_temp = image_paths_temp[permutation], image_idx_temp[permutation]
+                image_paths_temp, image_idx_temp = image_paths_temp[
+                    permutation], image_idx_temp[permutation]
                 argsort = np.argsort(image_paths_temp[:max_samples[task_name]])
-                image_paths_temp = image_paths_temp[argsort].tolist() 
+                image_paths_temp = image_paths_temp[argsort].tolist()
                 image_idx_temp = image_idx_temp[argsort].astype(int).tolist()
-                
+
                 temp = tuple(zip(image_paths_temp, image_idx_temp))
-                #print(temp)
+                # print(temp)
 
                 images.extend(temp)
                 classes_temp.extend(image_idx_temp)
-    
+
     if maxout:
-        unique_elements, counts_elements = np.unique(classes_temp, return_counts=True)
+        unique_elements, counts_elements = np.unique(
+            classes_temp, return_counts=True)
         print("\nFrequency of classes:")
         print(np.asarray((unique_elements, counts_elements)))
         print()
-        
-        
+
     return images
+
 
 class DatasetFolder(VisionDataset):
     """A generic data loader where the samples are arranged in this way: ::
@@ -160,7 +173,13 @@ class DatasetFolder(VisionDataset):
         super(DatasetFolder, self).__init__(root, transform=transform,
                                             target_transform=target_transform)
         classes, class_to_idx = self._find_classes(self.root)
-        samples = make_dataset(class_to_idx, max_samples, maxout, read_seed, extensions, is_valid_file)
+        samples = make_dataset(
+            class_to_idx,
+            max_samples,
+            maxout,
+            read_seed,
+            extensions,
+            is_valid_file)
         if len(samples) == 0:
             raise (RuntimeError("Found 0 files in subfolders of: " + self.root[0] + ' and ' + self.root[1] + "\n"
                                 "Supported extensions are: " + ",".join(extensions)))
@@ -184,35 +203,39 @@ class DatasetFolder(VisionDataset):
             No class is a subdirectory of another.
         """
         dirs.sort()
-        #print(dirs)
+        # print(dirs)
         task_to_num_classes = {}
         if sys.version_info >= (3, 5):
             # Faster and available in Python 3.5 and above
-            #classes = [d.name for d in os.scandir(dir) if d.is_dir()]
-            #classes = [os.path.abspath(d) for d in os.scandir(dir) if d.is_dir()]
+            # classes = [d.name for d in os.scandir(dir) if d.is_dir()]
+            # classes = [os.path.abspath(d) for d in os.scandir(dir) if d.is_dir()]
             classes = []
             for dir in dirs:
-                classes_temp = [os.path.abspath(d) for d in os.scandir(dir) if d.is_dir()]
-                task_name = os.path.basename(os.path.abspath(os.path.join(dir, os.pardir)))
+                classes_temp = [
+                    os.path.abspath(d) for d in os.scandir(dir) if d.is_dir()]
+                task_name = os.path.basename(
+                    os.path.abspath(os.path.join(dir, os.pardir)))
                 task_to_num_classes[task_name] = len(classes_temp)
-                #classes.extend([os.path.abspath(d) for d in os.scandir(dir) if d.is_dir()])
-                classes.extend(classes_temp)  
+                # classes.extend([os.path.abspath(d) for d in os.scandir(dir) if d.is_dir()])
+                classes.extend(classes_temp)
         else:
-            #classes = [os.path.abspath(d) for d in os.listdir(dir) if os.path.isdir(os.path.join(dir, d))]
+            # classes = [os.path.abspath(d) for d in os.listdir(dir) if os.path.isdir(os.path.join(dir, d))]
             classes = []
             for dir in dirs:
-                classes_temp = [os.path.abspath(d) for d in os.listdir(dir) if os.path.isdir(os.path.join(dir, d))]
-                #classes.extend([os.path.abspath(d) for d in os.listdir(dir) if os.path.isdir(os.path.join(dir, d))])
-                task_name = os.path.basename(os.path.abspath(os.path.join(dir, os.pardir)))
+                classes_temp = [os.path.abspath(d) for d in os.listdir(
+                    dir) if os.path.isdir(os.path.join(dir, d))]
+                # classes.extend([os.path.abspath(d) for d in os.listdir(dir) if os.path.isdir(os.path.join(dir, d))])
+                task_name = os.path.basename(
+                    os.path.abspath(os.path.join(dir, os.pardir)))
                 task_to_num_classes[task_name] = len(classes_temp)
                 classes.extend(classes_temp)
         classes.sort()
         class_to_idx = {classes[i]: i for i in range(len(classes))}
         self.task_to_num_classes = task_to_num_classes
-        
-        #print('classes:',classes)
-        #print('class_to_idx:', class_to_idx)
-        
+
+        # print('classes:',classes)
+        # print('class_to_idx:', class_to_idx)
+
         return classes, class_to_idx
 
     def __getitem__(self, index):
@@ -228,7 +251,7 @@ class DatasetFolder(VisionDataset):
             sample = self.transform(sample)
         if self.target_transform is not None:
             target = self.target_transform(target)
-            
+
         if self.includePaths:
             return (sample, target, path)
         else:
@@ -238,11 +261,21 @@ class DatasetFolder(VisionDataset):
         return len(self.samples)
 
 
-IMG_EXTENSIONS = ('.jpg', '.jpeg', '.png', '.ppm', '.bmp', '.pgm', '.tif', '.tiff', '.webp')
+IMG_EXTENSIONS = (
+    '.jpg',
+    '.jpeg',
+    '.png',
+    '.ppm',
+    '.bmp',
+    '.pgm',
+    '.tif',
+    '.tiff',
+    '.webp')
 
 
 def pil_loader(path):
-    # open path as file to avoid ResourceWarning (https://github.com/python-pillow/Pillow/issues/835)
+    # open path as file to avoid ResourceWarning
+    # (https://github.com/python-pillow/Pillow/issues/835)
     with open(path, 'rb') as f:
         img = Image.open(f)
         return img.convert('RGB')

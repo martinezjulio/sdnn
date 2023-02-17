@@ -26,20 +26,17 @@
 #CONFIG_FILE='./configs/vgg/face_casia_100k_seed1.yaml'
 #CONFIG_FILE='./configs/vgg/face_AFD_full_seed.yaml'
 #CONFIG_FILE='./configs/vgg/face_na_seed.yaml'
-CONFIG_FILE='./configs/vgg/face_AFD_matched_seed.yaml'
+CONFIG_FILE="$(pwd)/../configs/vgg/face_AFD_matched_seed.yaml"
 #CONFIG_FILE='./configs/vgg/cars_seed.yaml'
 #CONFIG_FILE='./configs/resnet/face_400k_resnet50.yaml'
 #CONFIG_FILE='./configs/resnet/inanimate_400k_resnet50.yaml'
 #CONFIG_FILE='./configs/alexnet/face_400k_nobatchnorm.yaml'
 #CONFIG_FILE='./configs/alexnet/inanimate_400k_nobatchnorm.yaml'
 
-SCRIPT=./train_new.py
+SCRIPT=./train.py
+
 
 hostname
-date
-echo "Sourcing conda..."
-source /mindhive/nklab4/users/kdobs/anaconda3/bin/activate
-date
 echo "Activating conda env..."
 #conda activate test
 conda activate torch-gpu-dev

@@ -3,7 +3,7 @@ Created on Aug 21, 2019, based on PyTorch open source implementation
 @author: Julio A Martinez
 '''
 
-from utils.vision import VisionDataset
+from .vision import VisionDataset
 
 from PIL import Image
 
@@ -32,17 +32,20 @@ def is_image_file(filename):
     """
     return has_file_allowed_extension(filename, IMG_EXTENSIONS)
 
-def make_dataset(dir, class_to_idx, extensions=None, is_valid_file=None, max_samples=None):
+
+def make_dataset(dir, class_to_idx, extensions=None,
+                 is_valid_file=None, max_samples=None):
     '''
     Input:
         max_samples: the max number of samples per category (Note: allows for less and therfore a non
-                                                            uniform number of samples per category. 
+                                                            uniform number of samples per category.
                                                             Can easily be changed to force uniformity):
     '''
     images = []
     dir = os.path.expanduser(dir)
     if not ((extensions is None) ^ (is_valid_file is None)):
-        raise ValueError("Both extensions and is_valid_file cannot be None or not None at the same time")
+        raise ValueError(
+            "Both extensions and is_valid_file cannot be None or not None at the same time")
     if extensions is not None:
         def is_valid_file(x):
             return has_file_allowed_extension(x, extensions)
@@ -62,7 +65,7 @@ def make_dataset(dir, class_to_idx, extensions=None, is_valid_file=None, max_sam
                     elif num_samples_reached < max_samples:
                         item = (path, class_to_idx[target])
                         images.append(item)
-                        num_samples_reached +=1
+                        num_samples_reached += 1
                     else:
                         break
     return images
@@ -101,7 +104,12 @@ class DatasetFolder(VisionDataset):
         super(DatasetFolder, self).__init__(root, transform=transform,
                                             target_transform=target_transform)
         classes, class_to_idx = self._find_classes(self.root)
-        samples = make_dataset(self.root, class_to_idx, extensions, is_valid_file, max_samples)
+        samples = make_dataset(
+            self.root,
+            class_to_idx,
+            extensions,
+            is_valid_file,
+            max_samples)
         if len(samples) == 0:
             raise (RuntimeError("Found 0 files in subfolders of: " + self.root + "\n"
                                 "Supported extensions are: " + ",".join(extensions)))
@@ -124,14 +132,17 @@ class DatasetFolder(VisionDataset):
         Ensures:
             No class is a subdirectory of another.
         """
-        
-        print('dir',dir)
-     
+
+        print('dir', dir)
+
         if sys.version_info >= (3, 5):
             # Faster and available in Python 3.5 and above
             classes = [d.name for d in os.scandir(dir) if d.is_dir()]
         else:
-            classes = [d for d in os.listdir(dir) if os.path.isdir(os.path.join(dir, d))]
+            classes = [
+                d for d in os.listdir(dir) if os.path.isdir(
+                    os.path.join(
+                        dir, d))]
         classes.sort()
         class_to_idx = {classes[i]: i for i in range(len(classes))}
         return classes, class_to_idx
@@ -159,11 +170,21 @@ class DatasetFolder(VisionDataset):
         return len(self.samples)
 
 
-IMG_EXTENSIONS = ('.jpg', '.jpeg', '.png', '.ppm', '.bmp', '.pgm', '.tif', '.tiff', '.webp')
+IMG_EXTENSIONS = (
+    '.jpg',
+    '.jpeg',
+    '.png',
+    '.ppm',
+    '.bmp',
+    '.pgm',
+    '.tif',
+    '.tiff',
+    '.webp')
 
 
 def pil_loader(path):
-    # open path as file to avoid ResourceWarning (https://github.com/python-pillow/Pillow/issues/835)
+    # open path as file to avoid ResourceWarning
+    # (https://github.com/python-pillow/Pillow/issues/835)
     with open(path, 'rb') as f:
         img = Image.open(f)
         return img.convert('RGB')
@@ -218,7 +239,3 @@ class ImageFolder(DatasetFolder):
                                           max_samples=max_samples,
                                           includePaths=includePaths)
         self.imgs = self.samples
-
-
-
-

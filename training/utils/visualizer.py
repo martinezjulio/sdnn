@@ -7,17 +7,18 @@ from scipy.ndimage.filters import gaussian_filter1d
 import torchvision.transforms as T
 
 
-SQUEEZENET_MEAN=np.array([0.5]*3)
-SQUEEZENET_STD=np.array([0.5]*3)
+SQUEEZENET_MEAN = np.array([0.5] * 3)
+SQUEEZENET_STD = np.array([0.5] * 3)
+
 
 def jitter(X, ox, oy):
     """
     Helper function to randomly jitter an image.
-    
+
     Inputs
     - X: PyTorch Tensor of shape (N, C, H, W)
     - ox, oy: Integers giving number of pixels to jitter along W and H axes
-    
+
     Returns: A new PyTorch Tensor of shape (N, C, H, W)
     """
     if ox != 0:
@@ -30,6 +31,7 @@ def jitter(X, ox, oy):
         X = torch.cat([bottom, top], dim=2)
     return X
 
+
 def preprocess(img, size=224):
     transform = T.Compose([
         T.Resize(size),
@@ -39,6 +41,7 @@ def preprocess(img, size=224):
         T.Lambda(lambda x: x[None]),
     ])
     return transform(img)
+
 
 def deprocess(img, should_rescale=True):
     transform = T.Compose([
@@ -50,11 +53,13 @@ def deprocess(img, should_rescale=True):
     ])
     return transform(img)
 
+
 def rescale(x):
     low, high = x.min(), x.max()
     x_rescaled = (x - low) / (high - low)
     return x_rescaled
-    
+
+
 def blur_image(X, sigma=1):
     X_np = X.cpu().clone().numpy()
     X_np = gaussian_filter1d(X_np, sigma, axis=2)
@@ -63,15 +68,16 @@ def blur_image(X, sigma=1):
     return X
 
 
-def create_unit_visualization(target, model, dtype, layer=None, layerType=None, singleFilterUnit=False, filterN=None, **kwargs):
+def create_unit_visualization(target, model, dtype, layer=None,
+                              layerType=None, singleFilterUnit=False, filterN=None, **kwargs):
     """
     Generate an image to maximize the score of target_y under a pretrained model.
-    
+
     Inputs:
     - target_y: Integer in the range [0, 1000) giving the index of the class
     - model: A pretrained CNN that will be used to generate the image
     - dtype: Torch datatype to use for computations
-    
+
     Keyword arguments:
     - l2_reg: Strength of L2 regularization on the image
     - learning_rate: How big of a step to take
@@ -88,83 +94,89 @@ def create_unit_visualization(target, model, dtype, layer=None, layerType=None, 
     max_jitter = kwargs.pop('max_jitter', 16)
     show_every = kwargs.pop('show_every', 100)
 
-    # Randomly initialize the image as a PyTorch Tensor, and make it require gradient.
+    # Randomly initialize the image as a PyTorch Tensor, and make it require
+    # gradient.
     img = torch.randn(1, 3, 224, 224).mul_(1.0).type(dtype).requires_grad_()
 
     if layerType == 'FEATLAYER':
         act_model = copy.deepcopy(model)
-        act_model = torch.nn.Sequential(*list(act_model.module.features.children())[:layer+1])
-        #act_model = torch.nn.Sequential(*list(act_model.features.children())[:layer+1])
+        act_model = torch.nn.Sequential(
+            *list(act_model.module.features.children())[:layer + 1])
+        # act_model = torch.nn.Sequential(*list(act_model.features.children())[:layer+1])
     elif layerType == 'CLASSLAYER':
         act_model = copy.deepcopy(model)
-        act_model.module.classifier = torch.nn.Sequential(*list(act_model.module.classifier.children())[:layer+1])
-        #act_model.classifier = torch.nn.Sequential(*list(act_model.classifier.children())[:layer+1])
+        act_model.module.classifier = torch.nn.Sequential(
+            *list(act_model.module.classifier.children())[:layer + 1])
+        # act_model.classifier = torch.nn.Sequential(*list(act_model.classifier.children())[:layer+1])
     else:
         act_model = model
-    
-    #print(act_model)
-    
+
+    # print(act_model)
+
     for t in range(num_iterations):
         # Randomly jitter the image a bit; this gives slightly nicer results
         ox, oy = random.randint(0, max_jitter), random.randint(0, max_jitter)
         img.data.copy_(jitter(img.data, ox, oy))
-        
+
         if 'iteration' in kwargs:
-            if kwargs['iteration']==0 and t==0:
+            if kwargs['iteration'] == 0 and t == 0:
                 print('image shape', img.shape)
-        ########################################################################
+        #######################################################################
         # TODO: Use the model to compute the gradient of the score for the     #
         # class target_y with respect to the pixels of the image, and make a   #
         # gradient step on the image using the learning rate. Don't forget the #
         # L2 regularization term!                                              #
         # Be very careful about the signs of elements in your code.            #
-        ########################################################################
+        #######################################################################
         if layerType == 'FEATLAYER':
             activations = act_model(img)
             if 'iteration' in kwargs:
-                if kwargs['iteration']==0 and t==0:
+                if kwargs['iteration'] == 0 and t == 0:
                     print('whole activations.shape', activations.shape)
-        
-            activation = activations[:,target] 
+
+            activation = activations[:, target]
             if 'iteration' in kwargs:
-                if kwargs['iteration']==0 and t==0:
+                if kwargs['iteration'] == 0 and t == 0:
                     print('target activation.shape', activation.shape)
-            
+
             if singleFilterUnit:
-                #activation
+                # activation
                 shape = activation.shape
                 width = shape[1]
                 height = shape[2]
-                i = width//2
-                j = height//2
-                activation = activation[:,i, j]
+                i = width // 2
+                j = height // 2
+                activation = activation[:, i, j]
                 scores = activation
                 if 'iteration' in kwargs:
-                    if kwargs['iteration']==0 and t==0:
+                    if kwargs['iteration'] == 0 and t == 0:
                         print('unit activation.shape', activation.shape)
             else:
-                activation = torch.reshape(input=activation, shape=[activation.shape[0], -1])   
+                activation = torch.reshape(
+                    input=activation, shape=[
+                        activation.shape[0], -1])
                 scores = torch.norm(activation)
-        elif layerType =='CLASSLAYER':
+        elif layerType == 'CLASSLAYER':
             activations = act_model(img)
-            #print('activations.shape', activations.shape)
-            activation = activations[:,target] 
-            activation = torch.reshape(input=activation, shape=[activation.shape[0], -1])
+            # print('activations.shape', activations.shape)
+            activation = activations[:, target]
+            activation = torch.reshape(
+                input=activation, shape=[
+                    activation.shape[0], -1])
             scores = torch.norm(activation)
         else:
             scores = act_model(img)
-            scores = scores[:,target] 
+            scores = scores[:, target]
             scores = torch.reshape(input=scores, shape=[scores.shape[0], -1])
-        
-        
+
         score = scores - (l2_reg * torch.norm(img))
         score.backward()
-        img.data += (learning_rate*img.grad.data/torch.norm(img.grad.data))
+        img.data += (learning_rate * img.grad.data / torch.norm(img.grad.data))
         img.grad.data.zero_()
-        ########################################################################
+        #######################################################################
         #                             END OF YOUR CODE                         #
-        ########################################################################
-        
+        #######################################################################
+
         # Undo the random jitter
         img.data.copy_(jitter(img.data, -ox, -oy))
 
@@ -175,17 +187,17 @@ def create_unit_visualization(target, model, dtype, layer=None, layerType=None, 
             img.data[:, c].clamp_(min=lo, max=hi)
         if t % blur_every == 0:
             blur_image(img.data, sigma=0.5)
-        
+
         # Periodically show the image
-        #if t == 0 or (t + 1) % show_every == 0 or t == num_iterations - 1:
+        # if t == 0 or (t + 1) % show_every == 0 or t == num_iterations - 1:
         #    plt.imshow(deprocess(img.data.clone().cpu()))
         #    class_name = target #class_names[target_y]
         #    plt.title('%s\nIteration %d / %d' % (class_name, t + 1, num_iterations))
         #    plt.gcf().set_size_inches(4, 4)
         #    plt.axis('off')
         #    plt.show()
-    
+
     del act_model
     torch.cuda.empty_cache()
-    
+
     return deprocess(img.data.cpu())

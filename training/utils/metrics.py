@@ -1,5 +1,6 @@
 import torch
 
+
 def precision(output, target, topk=(1,)):
     """Computes the precision@k for the specified values of k"""
     with torch.no_grad():
