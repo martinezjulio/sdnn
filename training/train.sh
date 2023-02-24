@@ -30,9 +30,11 @@ date
 echo "Sourcing python..."
 source /shared/venvs/py3.8-torch1.7.1/bin/activate
 date
-echo "Activating required packages..."
+echo "Activating virtual environment and required packages..."
 #conda activate test
 #conda activate torch-gpu-dev
+virtualenv project_otherrace
+source project_otherrace/bin/activate
 pip install -r requirements.txt
 date
 echo "Running python script..."
