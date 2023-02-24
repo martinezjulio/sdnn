@@ -1,24 +1,22 @@
 #!/bin/bash
 
+#SBATCH --nodes=1    # Each node has 16 or 20 CPU cores.
 #SBATCH --ntasks=1
-#SBATCH --mail-type=END
+#SBATCH --mail-type=END,FAIL
 #SBATCH --mail-user=Elaheh.Akbarifathkouhi@psychol.uni-giessen.de
 
-#SBATCH --partition=nklab
+#SBATCH --partition=single
 ##SBATCH --partition=normal
 
 #SBATCH --job-name=vgg_DualRace
 
-#SBATCH --time=6-23:00:00
+#SBATCH --time=4-23:00:00
 
-##SBATCH --gres=gpu:GEFORCERTX2080TI:1
-
-##SBATCH --gres=gpu:titan-x:1
-#SBATCH --gres=gpu:QUADRORTX6000:1
+#SBATCH --gres=gpu:1
 
 #SBATCH --mem=12G
 
-#SBATCH --output='./output/train/%A_%a.out'
+#SBATCH --output='/home/elaheh_akbari/sdnn-otherrace/output/train/%A_%a.out'
 
 CONFIG_FILE='./configs/vgg/face_dual_whitasia.yaml'
 
@@ -30,11 +28,10 @@ date
 echo "Sourcing python..."
 source /shared/venvs/py3.8-torch1.7.1/bin/activate
 date
-echo "Activating virtual environment and required packages..."
-#conda activate test
-#conda activate torch-gpu-dev
-virtualenv project_otherrace
-source project_otherrace/bin/activate
+echo "Installing requirements..."
+
+#virtualenv project_otherrace
+#source project_otherrace/bin/activate
 pip install -r requirements.txt
 date
 echo "Running python script..."
