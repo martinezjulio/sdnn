@@ -1,13 +1,17 @@
+# For save directories only enter the parent directory for all projects checkpoints. 
+# project.name will be joined to both checkpoints and runs as the basename directory.
+
+
 project:
-    name:             'face_casia_100k_seed1'
-    description:      'Training VGG on VGGFace and CASIA-webface on single classifier.'
+    name:             'face_otherrace_white_asian'
+    description:      'Training VGG on VGGFace using white and asian dataset'
     model:            'VGG16'
 data_directories:
-    task1:            '/mindhive/nklab4/shared/datasets/data_facecar'
-    task2:            '/om2/group/nklab/shared/datasets/CASIA-WebFace-Matched'
+    task1:            '/raid/shared/datasets/visoin/data_face_white/'
+    task2:            '/raid/shared/datasets/visoin/data_face_asian/'
 save_directories:
-    checkpoints_dir:  '/om2/user/kdobs/FaceNets/checkpoints/vgg/'
-    log_dir:          '/om2/user/kdobs/FaceNets/runs/vgg/'
+    checkpoints_dir:  '/raid/shared/projects/face_otherrace_white_asian/checkpoints/vgg/'
+    log_dir:          '/raid/shared/projects/face_otherrace_white_asian/runs/vgg/'
 saving:
     keep:             [-1]
     function:         'step'
