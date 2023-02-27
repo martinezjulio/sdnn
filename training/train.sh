@@ -25,13 +25,8 @@ SCRIPT=/home/elaheh_akbari/sdnn-otherrace/training/train.py
 
 hostname
 date
-echo "Sourcing python..."
-source /shared/venvs/py3.8-torch1.7.1/bin/activate
-date
-echo "Installing requirements..."
 
-#virtualenv project_otherrace
-#source project_otherrace/bin/activate
+echo "Installing requirements..."
 pip install -r requirements.txt
 date
 echo "Running python script..."
