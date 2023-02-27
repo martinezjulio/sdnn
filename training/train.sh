@@ -22,7 +22,7 @@ CONFIG_FILE='./configs/vgg/face_dual_whitasia.yaml'
 
 
 SCRIPT=/home/elaheh_akbari/sdnn-otherrace/training/train.py
-
+export PYTHONPATH=/home/elaheh_akbari/sdnn-otherrace/
 hostname
 date
 
