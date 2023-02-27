@@ -26,8 +26,13 @@ SCRIPT=/home/elaheh_akbari/sdnn-otherrace/training/train.py
 hostname
 date
 
+
 echo "Installing requirements..."
 pip install -r requirements.txt
+
+echo "Activating the PyTorch environment..."
+source /shared/venvs/py3.8-torch1.7.1/bin/activate
+
 date
 echo "Running python script..."
 CUDA_VISIBLE_DEVICES=0,1 python $SCRIPT --config_file $CONFIG_FILE --num_epochs 201 --read_seed 1 --maxout True --save_freq 10 --valid_freq 1 --use_scheduler "True" --pretrained "False" # --custom_learning_rate 0.0001
