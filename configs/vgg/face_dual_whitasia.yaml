@@ -7,11 +7,11 @@ project:
     description:      'Training VGG on VGGFace using white and asian dataset'
     model:            'VGG16'
 data_directories:
-    task1:            '/raid/shared/datasets/visoin/data_face_white/'
-    task2:            '/raid/shared/datasets/visoin/data_face_asian/'
+    task1:            '/raid/shared/datasets/visoin/data_face_white/data_facecar_na/'
+    task2:            '/raid/shared/datasets/visoin/data_face_asian/data_AFD_matched/'
 save_directories:
-    checkpoints_dir:  '/raid/shared/projects/face_otherrace_white_asian/checkpoints/vgg/'
-    log_dir:          '/raid/shared/projects/face_otherrace_white_asian/runs/vgg/'
+    checkpoints_dir:  '/raid/elaheh_akbari/face_otherrace_white_asian/checkpoints/vgg/'
+    log_dir:          '/raid/elaheh_akbari/face_otherrace_white_asian/runs/vgg/'
 saving:
     keep:             [-1]
     function:         'step'
