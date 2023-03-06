@@ -16,22 +16,19 @@
 
 #SBATCH --mem=12G
 
-#SBATCH --output='/home/elaheh_akbari/sdnn-otherrace/output/train/%A_%a.out'
+#SBATCH --output='/home/elaheh_akbari/new/sdnn-otherrace/output/train/%A_%a.out'
 
 CONFIG_FILE='./configs/vgg/face_dual_whitasia.yaml'
 
 
-SCRIPT=/home/elaheh_akbari/sdnn-otherrace/training/train.py
-export PYTHONPATH=/home/elaheh_akbari/sdnn-otherrace/
+SCRIPT=/home/elaheh_akbari/new/sdnn-otherrace/training/train.py
+
 hostname
 date
 
 
-echo "Installing requirements..."
-pip install -r requirements.txt
-
-echo "Activating the PyTorch environment..."
-source /shared/venvs/py3.8-torch1.7.1/bin/activate
+echo "Activating the environment..."
+source env/bin/activate
 
 date
 echo "Running python script..."
