@@ -8,6 +8,9 @@ import sys
 import copy
 import random
 
+# add the current directory to the PYTHONPATH so the custom modules can be imported
+sys.path.append("..")
+
 # custom modules
 import models
 from utils import tools
